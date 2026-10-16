@@ -55,4 +55,5 @@
     <string name="removal_message">Você tem certeza de que quer deletar a sua conta?</string>
     <string name="add_recipe_title">Passo 1...</string>
     <string name="add_recipe_subtitle">Antes de qualquer coisa, vamos definir os dados básicos da sua receita.</string>
+    <string name="imagem_da_receita">Imagem da receita</string>
 </resources>

@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.com.fiap.recipes.model.PreparationMethod
+import br.com.fiap.recipes.navigation.Destination
 import br.com.fiap.recipes.repository.savePreparationMethods
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 import kotlinx.coroutines.launch
@@ -93,6 +94,11 @@ fun AddPreparationMethodsScreen(
             newMethods = savePreparationMethods(
                 recipeId = recipeId!!,
                 preparationMethods = methodsToSend
+            )
+            navController?.navigate(
+                Destination.AddRecipePhotoScreen.createRoute(
+                    recipeId = recipeId
+                )
             )
         }
     }

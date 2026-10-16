@@ -4,10 +4,13 @@ import br.com.fiap.recipes.model.Ingredient
 import br.com.fiap.recipes.model.PreparationMethod
 import br.com.fiap.recipes.model.Recipe
 import br.com.fiap.recipes.model.RecipeRequest
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 
@@ -33,4 +36,11 @@ interface RecipeService {
         @Path("recipeId") recipeId: Int,
         @Body preparationMethods: List<PreparationMethod>
     ): List<PreparationMethod>
+
+    @Multipart
+    @POST("recipes/{recipeId}/upload-image")
+    suspend fun uploadImage(
+        @Path("recipeId") recipeId: Int,
+        @Part file: MultipartBody.Part
+    ): Recipe
 }
