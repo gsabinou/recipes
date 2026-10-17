@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +46,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
+import br.com.fiap.recipes.navigation.Destination
+import br.com.fiap.recipes.repository.uploadImage
 import br.com.fiap.recipes.ui.theme.RecipesTheme
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
 
 @Composable
 fun AddRecipePhotoScreen(recipeId: Int, navController: NavController) {
@@ -65,6 +72,15 @@ fun AddRecipePhotoScreen(recipeId: Int, navController: NavController) {
     var recipeImageBitmap by remember {
         mutableStateOf<Bitmap>(placeholderImage)
     }
+
+    // variável para armazenar o arquivo da imagem
+    var recipeImageFile by remember {
+        mutableStateOf(File(""))
+    }
+
+    // Criar o escopo de coroutine que será utilizado
+    // para chamar a gravação da imagem da receita
+    val scope = rememberCoroutineScope()
 
     // Cria um lançador de atividade para
     // abrir a galeria de imagens
@@ -87,7 +103,21 @@ fun AddRecipePhotoScreen(recipeId: Int, navController: NavController) {
                 recipeImageBitmap = placeholderImage
             }
         }
+
+        // Converter o bitmap para File
+        val recipeFileName = "${UUID.randomUUID()}.jpg"
+        recipeImageFile = File(context.cacheDir, recipeFileName)
+
+        FileOutputStream(recipeImageFile).use {
+            recipeImageBitmap.compress(
+                Bitmap.CompressFormat.JPEG,
+                100,
+                it
+            )
+        }
+
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -185,7 +215,16 @@ fun AddRecipePhotoScreen(recipeId: Int, navController: NavController) {
 
             }
             TextButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        uploadImage(
+                            recipeId = recipeId,
+                            file = recipeImageFile
+                        )
+                        // navega para a tela home
+                        navController.navigate(Destination.HomeScreen.createRoute(""))
+                    }
+                },
                 modifier = Modifier
                     .padding(bottom = 16.dp)
                     .align(Alignment.BottomEnd)

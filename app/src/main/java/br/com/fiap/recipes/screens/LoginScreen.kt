@@ -1,5 +1,6 @@
 package br.com.fiap.recipes.screens
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -130,6 +131,8 @@ private fun TitleComponentPreview() {
 @Composable
 fun LoginForm(navController: NavController) {
 
+    val context = LocalContext.current
+
     var email by remember{
         mutableStateOf("")
     }
@@ -252,9 +255,16 @@ fun LoginForm(navController: NavController) {
                 val authenticate = userRepository.login(email, password)
 
                 if (authenticate) {
+                    // gravando os dados do usuário no SharedPreferences
+                    val sharedPreferences = context
+                        .getSharedPreferences("user_data", Context.MODE_PRIVATE)
+                    sharedPreferences.edit()
+                        .putString("email", email)
+                        .apply()
                     navController
                         .navigate(
-                            Destination.HomeScreen.createRoute(email)
+                            Destination.HomeScreen
+                                .createRoute(email)
                         )
                 } else {
                     authenticationError = true

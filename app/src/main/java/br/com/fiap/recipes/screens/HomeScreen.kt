@@ -1,5 +1,6 @@
 package br.com.fiap.recipes.screens
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -121,6 +122,13 @@ fun MyTopAppBar(email: String = "", navController: NavController) {
 
     val userRepository =
         RoomUserRepository(LocalContext.current)
+
+    //  pegando os dados do usuário no sharedPreferences
+    val sharedPreferences = LocalContext.current
+        .getSharedPreferences("user_data", Context.MODE_PRIVATE)
+
+    // obtendo o valor da chave "email"
+    val emailSharedPreferences = sharedPreferences.getString("email", "")
 
     val user = userRepository.getUserByEmail(email)
 
